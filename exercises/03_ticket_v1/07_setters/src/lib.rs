@@ -11,28 +11,40 @@ pub struct Ticket {
 
 impl Ticket {
     pub fn new(title: String, description: String, status: String) -> Ticket {
-        if title.is_empty() {
-            panic!("Title cannot be empty");
-        }
-        if title.len() > 50 {
-            panic!("Title cannot be longer than 50 bytes");
-        }
-        if description.is_empty() {
-            panic!("Description cannot be empty");
-        }
-        if description.len() > 500 {
-            panic!("Description cannot be longer than 500 bytes");
-        }
-        if status != "To-Do" && status != "In Progress" && status != "Done" {
-            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
-        }
-
+        Self::check_title(&title);
+        Self::check_description(&description);
+        Self::check_status(&status);
         Ticket {
             title,
             description,
             status,
         }
     }
+
+    fn check_title(new_title: &str){
+        if new_title.is_empty(){
+            panic!("Title cannot be empty");
+        }
+        if new_title.len() > 50 {
+            panic!("Title cannot be longer than 50 bytes");
+        }
+    }
+
+    fn check_description(new_description: &str){
+        if new_description.is_empty() {
+            panic!("Description cannot be empty");
+        }
+        if new_description.len() > 500 {
+            panic!("Description cannot be longer than 500 bytes");
+        }
+    }
+
+    fn check_status(new_status: &str){
+        if new_status != "To-Do" && new_status != "In Progress" && new_status != "Done" {
+            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
+        }
+    }
+
 
     pub fn title(&self) -> &String {
         &self.title
@@ -45,7 +57,24 @@ impl Ticket {
     pub fn status(&self) -> &String {
         &self.status
     }
+    
+    pub fn set_title(&mut self, new_title: String){
+        Self::check_title(&new_title);
+        self.title = new_title;
+    }
+
+    pub fn set_description(&mut self, new_description: String){
+        Self::check_description(&new_description);
+        self.description = new_description;
+    }
+
+    pub fn set_status(&mut self, new_status: String){
+        Self::check_status(&new_status);
+        self.status = new_status;
+    }
+
 }
+
 
 #[cfg(test)]
 mod tests {
