@@ -8,6 +8,47 @@ enum Status {
     Done,
 }
 
+#[derive(Debug)]
+enum StatusErr {
+    EmptyStatus,
+    UnauthorizedStatus,
+}
+
+impl TryFrom<String> for Status {
+    type Error = StatusErr;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        if value.eq_ignore_ascii_case("ToDo") {
+            Ok(Status::ToDo)
+        } else if value.eq_ignore_ascii_case("InProgress") {
+            Ok(Status::InProgress)
+        } else if value.eq_ignore_ascii_case("Done") {
+            Ok(Status::Done)
+        } else if value.is_empty() {
+            Err(StatusErr::EmptyStatus)
+        } else {
+            Err(StatusErr::UnauthorizedStatus)
+        }
+    }
+}
+
+impl TryFrom<&str> for Status {
+    type Error = StatusErr;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        if value.eq_ignore_ascii_case("ToDo") {
+            Ok(Status::ToDo)
+        } else if value.eq_ignore_ascii_case("InProgress") {
+            Ok(Status::InProgress)
+        } else if value.eq_ignore_ascii_case("Done") {
+            Ok(Status::Done)
+        } else if value.is_empty() {
+            Err(StatusErr::EmptyStatus)
+        } else {
+            Err(StatusErr::UnauthorizedStatus)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

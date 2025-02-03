@@ -1,4 +1,4 @@
-// TODO: Implement `Ticket::assigned_to` using `Option` as the return type.
+// TODO: Implement `Ticket::AssignedTo` using `Option` as the return type.
 
 #[derive(Debug, PartialEq)]
 struct Ticket {
@@ -10,7 +10,7 @@ struct Ticket {
 #[derive(Debug, PartialEq)]
 enum Status {
     ToDo,
-    InProgress { assigned_to: String },
+    InProgress { assigned_to: Option<String> },
     Done,
 }
 
@@ -35,8 +35,11 @@ impl Ticket {
             status,
         }
     }
-    pub fn assigned_to(&self) -> Option<&String> {
-        todo!()
+    pub fn assigned_to(&self) -> Option<String> {
+        match &self.status {
+            Status::InProgress { assigned_to } => assigned_to.clone(),
+            _ => None,
+        }
     }
 }
 
@@ -63,9 +66,9 @@ mod tests {
             valid_title(),
             valid_description(),
             Status::InProgress {
-                assigned_to: "Alice".to_string(),
+                assigned_to: Some("Alice".to_string()),
             },
         );
-        assert_eq!(ticket.assigned_to(), Some(&"Alice".to_string()));
+        assert_eq!(ticket.assigned_to(), Some("Alice".to_string()));
     }
 }
