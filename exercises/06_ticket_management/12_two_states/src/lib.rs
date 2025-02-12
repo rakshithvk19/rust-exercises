@@ -37,6 +37,12 @@ pub enum Status {
     Done,
 }
 
+impl From<usize> for TicketId {
+    fn from(id: usize) -> Self {
+        TicketId(id as u64)
+    }
+}
+
 impl TicketStore {
     pub fn new() -> Self {
         Self {
@@ -44,8 +50,29 @@ impl TicketStore {
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    // pub fn add_ticket(&mut self, ticket: Ticket) {
+    //     self.tickets.push(ticket);
+    // }
+
+    pub fn add_ticket(&mut self, ticket_draft: TicketDraft) -> TicketId {
+        // fetch the ticketID based on the index of ticket store
+        let current_index = self.tickets.len();
+        let new_ticket_id = (current_index + 1).into();
+
+        let new_ticket = Ticket {
+            id: new_ticket_id,
+            title: ticket_draft.title,
+            description: ticket_draft.description,
+            status: Status::ToDo,
+        };
+
+        self.tickets.push(new_ticket);
+
+        new_ticket_id
+    }
+
+    pub fn get(&self, ticket_id: TicketId) -> Option<&Ticket> {
+        self.tickets.iter().find(|ticket| ticket.id == ticket_id)
     }
 }
 

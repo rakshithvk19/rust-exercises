@@ -36,6 +36,15 @@ impl TicketStore {
     }
 }
 
+impl<'a> IntoIterator for &'a TicketStore {
+    type Item = &'a Ticket; // Iterate over references, not owned values
+    type IntoIter = std::slice::Iter<'a, Ticket>; // Use slice iterator
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.tickets.iter() // Directly return the slice iterator
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
