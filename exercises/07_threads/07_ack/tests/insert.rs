@@ -12,6 +12,7 @@ fn insert_works() {
         title: ticket_title(),
         description: ticket_description(),
     };
+
     let command = Command::Insert {
         draft: draft.clone(),
         response_sender,
@@ -30,6 +31,8 @@ fn insert_works() {
         id: ticket_id,
         response_sender,
     };
+
+    //Act 02
     sender
         .send(command)
         .expect("Did you actually spawn a thread? The channel is closed!");
@@ -38,6 +41,8 @@ fn insert_works() {
         .recv()
         .expect("No response received!")
         .unwrap();
+
+    //Assertions
     assert_eq!(ticket_id, ticket.id);
     assert_eq!(ticket.status, Status::ToDo);
     assert_eq!(ticket.title, draft.title);

@@ -12,6 +12,7 @@ fn works() {
     let ticket_id = client.insert(draft.clone()).unwrap();
 
     let ticket = client.get(ticket_id).unwrap().unwrap();
+
     {
         let mut ticket = ticket.lock().unwrap();
         assert_eq!(ticket_id, ticket.id);
@@ -23,6 +24,7 @@ fn works() {
     }
 
     let ticket = client.get(ticket_id).unwrap().unwrap();
+
     {
         let ticket = ticket.lock().unwrap();
         assert_eq!(ticket_id, ticket.id);
