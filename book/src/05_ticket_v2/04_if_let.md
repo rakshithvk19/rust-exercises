@@ -4,9 +4,9 @@ Your solution to the previous exercise probably looks like this:
 
 ```rust
 impl Ticket {
-    pub fn assigned_to(&self) -> &str {
+    pub fn AssignedTo(&self) -> &str {
         match &self.status {
-            Status::InProgress { assigned_to } => assigned_to,
+            Status::InProgress { AssignedTo } => AssignedTo,
             Status::Done | Status::ToDo => {
                 panic!(
                     "Only `In-Progress` tickets can be \
@@ -28,13 +28,13 @@ New constructs to the rescue!
 The `if let` construct allows you to match on a single variant of an enum,
 without having to handle all the other variants.
 
-Here's how you can use `if let` to simplify the `assigned_to` method:
+Here's how you can use `if let` to simplify the `AssignedTo` method:
 
 ```rust
 impl Ticket {
-    pub fn assigned_to(&self) -> &str {
-        if let Status::InProgress { assigned_to } = &self.status {
-            assigned_to
+    pub fn AssignedTo(&self) -> &str {
+        if let Status::InProgress { AssignedTo } = &self.status {
+            AssignedTo
         } else {
             panic!(
                 "Only `In-Progress` tickets can be assigned to someone"
@@ -51,13 +51,13 @@ you can use the `let/else` construct:
 
 ```rust
 impl Ticket {
-    pub fn assigned_to(&self) -> &str {
-        let Status::InProgress { assigned_to } = &self.status else {
+    pub fn AssignedTo(&self) -> &str {
+        let Status::InProgress { AssignedTo } = &self.status else {
             panic!(
                 "Only `In-Progress` tickets can be assigned to someone"
             );
         };
-        assigned_to
+        AssignedTo
     }
 }
 ```

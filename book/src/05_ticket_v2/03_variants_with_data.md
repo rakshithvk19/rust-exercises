@@ -25,7 +25,7 @@ We can model this by attaching a `String` field to the `InProgress` variant:
 enum Status {
     ToDo,
     InProgress {
-        assigned_to: String,
+        AssignedTo: String,
     },
     Done,
 }
@@ -36,32 +36,32 @@ The syntax mirrors, in fact, the one we used to define a struct—it's just "inl
 
 ## Accessing variant data
 
-If we try to access `assigned_to` on a `Status` instance,
+If we try to access `AssignedTo` on a `Status` instance,
 
 ```rust
 let status: Status = /* */;
 
 // This won't compile
-println!("Assigned to: {}", status.assigned_to);
+println!("Assigned to: {}", status.AssignedTo);
 ```
 
 the compiler will stop us:
 
 ```text
-error[E0609]: no field `assigned_to` on type `Status`
+error[E0609]: no field `AssignedTo` on type `Status`
  --> src/main.rs:5:40
   |
-5 |     println!("Assigned to: {}", status.assigned_to);
+5 |     println!("Assigned to: {}", status.AssignedTo);
   |                                        ^^^^^^^^^^^ unknown field
 ```
 
-`assigned_to` is **variant-specific**, it's not available on all `Status` instances.\
-To access `assigned_to`, we need to use **pattern matching**:
+`AssignedTo` is **variant-specific**, it's not available on all `Status` instances.\
+To access `AssignedTo`, we need to use **pattern matching**:
 
 ```rust
 match status {
-    Status::InProgress { assigned_to } => {
-        println!("Assigned to: {}", assigned_to);
+    Status::InProgress { AssignedTo } => {
+        println!("Assigned to: {}", AssignedTo);
     },
     Status::ToDo | Status::Done => {
         println!("Done");
@@ -71,14 +71,14 @@ match status {
 
 ## Bindings
 
-In the match pattern `Status::InProgress { assigned_to }`, `assigned_to` is a **binding**.\
-We're **destructuring** the `Status::InProgress` variant and binding the `assigned_to` field to
-a new variable, also named `assigned_to`.\
+In the match pattern `Status::InProgress { AssignedTo }`, `AssignedTo` is a **binding**.\
+We're **destructuring** the `Status::InProgress` variant and binding the `AssignedTo` field to
+a new variable, also named `AssignedTo`.\
 If we wanted, we could bind the field to a different variable name:
 
 ```rust
 match status {
-    Status::InProgress { assigned_to: person } => {
+    Status::InProgress { AssignedTo: person } => {
         println!("Assigned to: {}", person);
     },
     Status::ToDo | Status::Done => {
