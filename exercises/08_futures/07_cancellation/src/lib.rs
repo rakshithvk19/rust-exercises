@@ -6,8 +6,11 @@ use tokio::net::TcpListener;
 
 pub async fn run(listener: TcpListener, n_messages: usize, timeout: Duration) -> Vec<u8> {
     let mut buffer = Vec::new();
+
+    //Reads all the messages from the TCP Stream and stores it in a vector.
     for _ in 0..n_messages {
         let (mut stream, _) = listener.accept().await.unwrap();
+
         let _ = tokio::time::timeout(timeout, async {
             stream.read_to_end(&mut buffer).await.unwrap();
         })
@@ -23,6 +26,7 @@ mod tests {
 
     #[tokio::test]
     async fn ping() {
+        //Initializing variables
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();
         let messages = vec!["hello", "from", "this", "task"];
@@ -46,6 +50,7 @@ mod tests {
 
         let buffered = handle.await.unwrap();
         let buffered = std::str::from_utf8(&buffered).unwrap();
-        assert_eq!(buffered, "");
+
+        assert_eq!(buffered, "hefrthta");
     }
 }

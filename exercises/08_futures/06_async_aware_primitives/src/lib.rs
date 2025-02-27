@@ -4,7 +4,8 @@
 ///  the testing code too, yes).
 ///
 /// Can you understand the sequence of events that can lead to a deadlock?
-use std::sync::mpsc;
+// use std::sync::mpsc;
+use tokio::sync::mpsc;
 
 pub struct Message {
     payload: String,
@@ -15,16 +16,21 @@ pub struct Message {
 /// channel to continue communicating with the caller.
 pub async fn pong(mut receiver: mpsc::Receiver<Message>) {
     loop {
-        if let Ok(msg) = receiver.recv() {
+        if let msg = receiver.recv().await.unwrap() {
             println!("Pong received: {}", msg.payload);
-            let (sender, new_receiver) = mpsc::channel();
+
+            //Initialize a new channel for what?
+            let (sender_3, new_receiver_3) = mpsc::channel(1);
+
             msg.response_channel
                 .send(Message {
                     payload: "pong".into(),
-                    response_channel: sender,
+                    response_channel: sender_3,
                 })
+                .await
                 .unwrap();
-            receiver = new_receiver;
+
+            receiver = new_receiver_3;
         }
     }
 }
@@ -32,22 +38,33 @@ pub async fn pong(mut receiver: mpsc::Receiver<Message>) {
 #[cfg(test)]
 mod tests {
     use crate::{pong, Message};
-    use std::sync::mpsc;
+    // use std::sync::mpsc;
+    use tokio::sync::mpsc;
 
     #[tokio::test]
     async fn ping() {
-        let (sender, receiver) = mpsc::channel();
-        let (response_sender, response_receiver) = mpsc::channel();
-        sender
+        //Initializing query channel
+        let (sender_1, receiver_1) = mpsc::channel(1);
+
+        //Initializing response channel
+        let (response_sender_2, mut response_receiver_2) = mpsc::channel(1);
+
+        //Sending message in query channel
+        sender_1
             .send(Message {
                 payload: "pong".into(),
-                response_channel: response_sender,
+                response_channel: response_sender_2,
             })
+            .await
             .unwrap();
 
-        tokio::spawn(pong(receiver));
+        //Running pong fn as a new tokio task
+        tokio::spawn(pong(receiver_1));
 
-        let answer = response_receiver.recv().unwrap().payload;
+        //Fetching payload value from the response channel
+        let answer = response_receiver_2.recv().await.unwrap().payload;
+
+        //Assertion
         assert_eq!(answer, "pong");
     }
 }
